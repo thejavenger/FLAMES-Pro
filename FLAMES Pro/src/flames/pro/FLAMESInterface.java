@@ -3,10 +3,12 @@ package flames.pro;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -21,8 +23,11 @@ public class FLAMESInterface extends javax.swing.JFrame {
     String girlfullname = "";
         
     Graphics2D g;
+    Graphics defaultgraphics;
     
     ArrayList matchedletters = new ArrayList();
+    
+    boolean flamescalculated = false;
     
     public FLAMESInterface() {
         initComponents();
@@ -30,6 +35,8 @@ public class FLAMESInterface extends javax.swing.JFrame {
     }
     
     private void CalculateFlames(){
+        
+        flamescalculated = false;
         
         String boyname = "";
         String girlname = "";
@@ -112,15 +119,38 @@ public class FLAMESInterface extends javax.swing.JFrame {
     
     private void SketchFlames(){
         
+        int boardx = pnlSketchBoard.getX();
+        int boardy = pnlSketchBoard.getY();
+        int boardheight = pnlSketchBoard.getHeight();
+        int boardwidth = pnlSketchBoard.getWidth();
+        
+        
         g = (Graphics2D) pnlSketchBoard.getGraphics();
+        pnlSketchBoard.paint(defaultgraphics);
+        //paintComponents(g);
+        
+//        g.setPaintMode();
+        
+        //g.clearRect(0, 0, getWidth(), getHeight());
+        //pnlMain.repaint();
+        
+//        g.setColor(Color.WHITE);
+//        g.fillRect(boardx, boardy, boardwidth, boardheight);
+        
+        //g.fill3DRect(0, 0, boardheight, boardwidth, false);
+        
+        //pnlSketchBoard.setBackground(new java.awt.Color(255, 255, 255));
+        
+        //pnlSketchBoard.removeAll();
+        //pnlSketchBoard.repaint();
         
         g.setColor(Color.BLACK);
         g.setFont(new java.awt.Font("Verdana", 0, 19));
         g.setStroke(new BasicStroke(1));
         
         
-        int nameheight = g.getFontMetrics().getHeight();
-        int namewidth = g.getFontMetrics().stringWidth(boyfullname);
+        int wordheight = g.getFontMetrics().getHeight();
+        int wordwidth = g.getFontMetrics().stringWidth(boyfullname);
         
         int marginx = 25;
         int marginy = 25;
@@ -130,6 +160,11 @@ public class FLAMESInterface extends javax.swing.JFrame {
         int letterx = marginx;
         int lettery = marginy;
         
+        int centerx = 0;
+        int centery;
+        int circlepointx = 0;
+        int circlepointy = 0;
+        
         //g.drawString(boyfullname.toUpperCase(), 50, 50);
         
         for(int i=0; i<boyfullname.length(); i++){
@@ -138,53 +173,51 @@ public class FLAMESInterface extends javax.swing.JFrame {
             
             String currentletter = boyfullname.toUpperCase().charAt(i) + "";
             
-            namewidth = g.getFontMetrics().stringWidth(currentletter);
+            wordwidth = g.getFontMetrics().stringWidth(currentletter);
             
-            g.drawString(currentletter, letterx, lettery + (nameheight/2));
+            g.drawString(currentletter, letterx, lettery + (wordheight/2));
             
             
             if(matchedletters.contains(currentletter)){
                 
-                int linexfrom = letterx + namewidth + 5;
+                int linexfrom = letterx + wordwidth + 5;
                 int lineyfrom = lettery - 5;
                 int linexto = letterx - 5;
-                //int linexto = letterx - (namewidth/2) - 5;
-                int lineyto = lettery + (nameheight/2) + 5;
+                //int linexto = letterx - (wordwidth/2) - 5;
+                int lineyto = lettery + (wordheight/2) + 5;
                 
                 g.setStroke(new BasicStroke(1));
             
                 g.drawLine(linexfrom, lineyfrom, linexto, lineyto);
                 g.drawLine(linexfrom + 2, lineyfrom, linexto + 2, lineyto);
 
-                //g.drawLine(letterx+4, lettery+4, letterx + namewidth +4, lettery +4 + (nameheight/2));
-                //g.drawLine(letterx, lettery, letterx + nameheight, lettery);
+                //g.drawLine(letterx+4, lettery+4, letterx + wordwidth +4, lettery +4 + (wordheight/2));
+                //g.drawLine(letterx, lettery, letterx + wordheight, lettery);
                 
             }
             
             
-            
-            
-            letterx += namewidth + lettergap;
+            letterx += wordwidth + lettergap;
             
         }
         
         letterx = marginx;
-        lettery += nameheight * 2;
+        lettery += wordheight * 2;
         
         for(int i=0; i<girlfullname.length(); i++){
             
             String currentletter = girlfullname.toUpperCase().charAt(i) + "";
             
-            namewidth = g.getFontMetrics().stringWidth(currentletter);
+            wordwidth = g.getFontMetrics().stringWidth(currentletter);
             
-            g.drawString(currentletter, letterx, lettery + (nameheight/2));
+            g.drawString(currentletter, letterx, lettery + (wordheight/2));
             
             if(matchedletters.contains(currentletter)){
                 
-                int linexfrom = letterx + namewidth + 5;
+                int linexfrom = letterx + wordwidth + 5;
                 int lineyfrom = lettery - 5;
                 int linexto = letterx - 5;
-                int lineyto = lettery + (nameheight/2) + 5;
+                int lineyto = lettery + (wordheight/2) + 5;
                 
                 g.setStroke(new BasicStroke(1));
             
@@ -193,7 +226,7 @@ public class FLAMESInterface extends javax.swing.JFrame {
                 
             }
             
-            letterx += namewidth + lettergap;
+            letterx += wordwidth + lettergap;
             
         }
         
@@ -219,11 +252,11 @@ public class FLAMESInterface extends javax.swing.JFrame {
             flamesletter = "S";
         
         letterx = marginx + 10;
-        lettery += nameheight * 3;
+        lettery += wordheight * 3;
         lettergap = 25;
         
         g.setColor(Color.BLACK);
-        g.setFont(new java.awt.Font("Segoe Script", 0, 48));
+        g.setFont(new java.awt.Font("Segoe Script", 0, 36));
         g.setStroke(new BasicStroke(1));
         
         int[] flamesletterwidth = new int[flamesword.length()];
@@ -234,14 +267,21 @@ public class FLAMESInterface extends javax.swing.JFrame {
             
             String currentletter = flamesword.toUpperCase().charAt(i) + "";
             
-            namewidth = g.getFontMetrics().stringWidth(currentletter);
+            wordheight = g.getFontMetrics().getHeight();
+            wordwidth = g.getFontMetrics().stringWidth(currentletter);
             
             if(currentletter.equals(flamesletter)){
+                wordheight = g.getFontMetrics().getHeight();
+                centerx = letterx;
+                centery = lettery - (wordheight/2);
                 
-                int centerx = letterx;
-                int centery = lettery - nameheight;
+                circlepointx = (centerx-5) + (wordwidth +10);
+                circlepointy = lettery + ((centery - lettery)/2);
                 
-                g.drawOval(centerx, centery, namewidth + 5, nameheight + 20);
+                
+                g.drawOval(centerx-5, centery-5, wordwidth +10, (wordheight/2)+10);
+                
+                
                 
                 //g.draw
                 
@@ -250,10 +290,10 @@ public class FLAMESInterface extends javax.swing.JFrame {
                 g.setColor(Color.BLACK);
             }
             
-            g.drawString(currentletter, letterx, lettery + (nameheight/2));
+            g.drawString(currentletter, letterx, lettery);
             
-            letterx += namewidth + lettergap;
-            flamesletterwidth[i] = namewidth;
+            letterx += wordwidth + lettergap;
+            flamesletterwidth[i] = wordwidth;
             
         }
         
@@ -263,11 +303,11 @@ public class FLAMESInterface extends javax.swing.JFrame {
         g.setStroke(new BasicStroke(1));
         
         
-        nameheight = g.getFontMetrics().getHeight();
-        //namewidth = g.getFontMetrics().stringWidth(boyfullname);
+        wordheight = g.getFontMetrics().getHeight();
+        //wordwidth = g.getFontMetrics().stringWidth(boyfullname);
         
         letterx = marginx + 10;
-        lettery += nameheight * 3;
+        lettery += wordheight * 2;
         lettergap = 10;
         
         
@@ -279,7 +319,7 @@ public class FLAMESInterface extends javax.swing.JFrame {
             
             String currentletter = countword;
             
-            namewidth = g.getFontMetrics().stringWidth(currentletter);
+            wordwidth = g.getFontMetrics().stringWidth(currentletter);
             
             if(flamescount<=6){
                 
@@ -302,27 +342,79 @@ public class FLAMESInterface extends javax.swing.JFrame {
             
             
             letterx += ((flamesletterwidth[flamescharcount-1]));
-            lettery = lettery + (nameheight * (flamescharcount/6));
+            lettery = lettery + (wordheight * (flamescharcount/6));
             
             if(i==matched-1)
                 g.setColor(Color.RED);
             
             if(flamescharcount==6)
-                g.drawString(currentletter, letterx - (flamesletterwidth[flamescharcount-1]/2), (lettery + (nameheight/2))-nameheight);
+                g.drawString(currentletter, letterx - (flamesletterwidth[flamescharcount-1]/2), (lettery + (wordheight/2))-wordheight);
             else
-                g.drawString(currentletter, letterx - (flamesletterwidth[flamescharcount-1]/2), lettery + (nameheight/2));
+                g.drawString(currentletter, letterx - (flamesletterwidth[flamescharcount-1]/2), lettery + (wordheight/2));
             
             write("flamescount: " + flamescount + " flamescharcount: " + flamescharcount + " flamesletterwidth: " + flamesletterwidth + " letterx: " + letterx + " lettery: " + lettery);
             
             
             letterx += flameslettergap;
             
-            
         }
         
+        counter = matched;
+        
+        String flames;
+        
+        
+        while(counter>6){
+            counter = counter - 6;
+        }
+
+        if (counter==1)
+            flames = "Friends";
+        else if (counter==2)
+            flames = "Lovers";
+        else if (counter==3)
+            flames = "Anger";
+        else if (counter==4)
+            flames = "Marriages";
+        else if (counter==5)
+            flames = "Enemies";
+        else
+            flames = "Sweethearts";
+        
+        
+        g.setColor(Color.BLACK);
+        g.setFont(new java.awt.Font("Segoe Script", 0, 24));
+        g.setStroke(new BasicStroke(1));
+        
+        wordheight = g.getFontMetrics().getHeight();
+        wordwidth = g.getFontMetrics().stringWidth(flames);
+        
+        int flamesx = boardwidth - wordwidth - 50;
+        int flamesy = boardheight - wordheight - 15;
+        
+        int flamestopy = (flamesy - wordheight/2);
+        
+        int arrowpointx = flamesx - 10;
+        int arrowpointy = ((flamesy-flamestopy)/2)+flamestopy;
+        
+        
+        g.drawString(flames, flamesx, flamesy);
+        
+        g.drawRect(flamesx - 10, flamesy - wordheight/2, wordwidth + 20, wordheight - 20);
+        
+        
+        g.drawLine(circlepointx, circlepointy, arrowpointx, arrowpointy);
+        
+        g.drawLine(arrowpointx - 10, arrowpointy - 20, arrowpointx, arrowpointy);
+        g.drawLine(arrowpointx - 10, arrowpointy + 5, arrowpointx, arrowpointy);
+        
+        g.setFont(new java.awt.Font("Segoe Script", 0, 15));
+        
+        g.drawString(matched + " letter matched.", flamesx, flamesy - (wordheight/2) - 10);
         
         
         
+        flamescalculated = true;
         
         
     }
@@ -349,35 +441,61 @@ public class FLAMESInterface extends javax.swing.JFrame {
     }
     
     
+    @Override
+    public void paint(Graphics g) {
+       super.paint(g);
+    }
+    
    private void extraComponents(){
         this.setLocationRelativeTo(null);
+        
+        defaultgraphics = pnlSketchBoard.getGraphics();
+        
         //setIconImage(new ImageIcon("favicon.png").getImage());
     }
    
    
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        pnlMain = new javax.swing.JPanel();
         pnlBoy = new javax.swing.JPanel();
         txtBoyFirstname = new javax.swing.JTextField();
         txtBoyLastname = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        pnlGirl = new javax.swing.JPanel();
-        txtGirlFirstname = new javax.swing.JTextField();
-        txtGirlLastname = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         lblMatched = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         lblResult = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         btnFlames = new javax.swing.JButton();
+        pnlGirl = new javax.swing.JPanel();
+        txtGirlFirstname = new javax.swing.JTextField();
+        txtGirlLastname = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         pnlSketchBoard = new javax.swing.JPanel();
 
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         pnlBoy.setBorder(javax.swing.BorderFactory.createTitledBorder("Boy"));
 
@@ -418,48 +536,6 @@ public class FLAMESInterface extends javax.swing.JFrame {
                 .addGroup(pnlBoyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pnlGirl.setBorder(javax.swing.BorderFactory.createTitledBorder("Girl"));
-
-        txtGirlFirstname.setText("Divina Ursula Bokbokova");
-
-        txtGirlLastname.setText("Smash");
-        txtGirlLastname.setNextFocusableComponent(btnFlames);
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
-        jLabel3.setText("Firstname");
-
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
-        jLabel4.setText("Lastname");
-
-        javax.swing.GroupLayout pnlGirlLayout = new javax.swing.GroupLayout(pnlGirl);
-        pnlGirl.setLayout(pnlGirlLayout);
-        pnlGirlLayout.setHorizontalGroup(
-            pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlGirlLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtGirlFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtGirlLastname, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
-        );
-        pnlGirlLayout.setVerticalGroup(
-            pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlGirlLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtGirlFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtGirlLastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -523,7 +599,50 @@ public class FLAMESInterface extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        pnlGirl.setBorder(javax.swing.BorderFactory.createTitledBorder("Girl"));
+
+        txtGirlFirstname.setText("Divina Ursula Bokbokova");
+
+        txtGirlLastname.setText("Smash");
+        txtGirlLastname.setNextFocusableComponent(btnFlames);
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        jLabel3.setText("Firstname");
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
+        jLabel4.setText("Lastname");
+
+        javax.swing.GroupLayout pnlGirlLayout = new javax.swing.GroupLayout(pnlGirl);
+        pnlGirl.setLayout(pnlGirlLayout);
+        pnlGirlLayout.setHorizontalGroup(
+            pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlGirlLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtGirlFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtGirlLastname, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(33, Short.MAX_VALUE))
+        );
+        pnlGirlLayout.setVerticalGroup(
+            pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlGirlLayout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtGirlFirstname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtGirlLastname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlGirlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         pnlSketchBoard.setBackground(new java.awt.Color(255, 255, 255));
+        pnlSketchBoard.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         javax.swing.GroupLayout pnlSketchBoardLayout = new javax.swing.GroupLayout(pnlSketchBoard);
         pnlSketchBoard.setLayout(pnlSketchBoardLayout);
@@ -536,44 +655,72 @@ public class FLAMESInterface extends javax.swing.JFrame {
             .addGap(0, 415, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+        javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
+        pnlMain.setLayout(pnlMainLayout);
+        pnlMainLayout.setHorizontalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlSketchBoard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(pnlGirl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(pnlBoy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+        pnlMainLayout.setVerticalGroup(
+            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
+                .addContainerGap(17, Short.MAX_VALUE)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(pnlMainLayout.createSequentialGroup()
                         .addComponent(pnlBoy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pnlGirl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlSketchBoard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void btnFlamesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFlamesActionPerformed
+    private void btnFlamesActionPerformed(java.awt.event.ActionEvent evt) {                                          
         CalculateFlames();
         SketchFlames();
-    }//GEN-LAST:event_btnFlamesActionPerformed
+    }                                         
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {                                  
+        if(flamescalculated){
+            CalculateFlames();
+            SketchFlames();
+            
+            
+        this.validate();
+        this.repaint();
+        }
+    }                                 
 
     
     public static void main(String args[]) {
@@ -608,7 +755,7 @@ public class FLAMESInterface extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton btnFlames;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -617,14 +764,16 @@ public class FLAMESInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblMatched;
     private javax.swing.JLabel lblResult;
     private javax.swing.JPanel pnlBoy;
     private javax.swing.JPanel pnlGirl;
+    private javax.swing.JPanel pnlMain;
     private javax.swing.JPanel pnlSketchBoard;
     private javax.swing.JTextField txtBoyFirstname;
     private javax.swing.JTextField txtBoyLastname;
     private javax.swing.JTextField txtGirlFirstname;
     private javax.swing.JTextField txtGirlLastname;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
